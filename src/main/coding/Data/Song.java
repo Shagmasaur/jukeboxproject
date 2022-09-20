@@ -1,21 +1,36 @@
 package main.coding.Data;
 
+import main.coding.Utility.DbConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Song
 {
     private int songId;
     private String songName;
-    private String genre;
-    private String album;
     private String artist;
-    private String duration;
+    private String duration;;
+    private String album;
+    private String genre;
+    private String filepath;
 
-    public Song(int songId, String songName, String genre, String album, String artist, String duration) {
+
+    public Song(int songId, String songName, String artist, String duration, String album, String genre, String trackPath) {
         this.songId = songId;
         this.songName = songName;
-        this.genre = genre;
-        this.album = album;
         this.artist = artist;
         this.duration = duration;
+        this.album = album;
+        this.genre = genre;
+        this.filepath = trackPath;
+    }
+
+    public Song()
+    {
+
     }
 
     public int getSongId() {
@@ -34,22 +49,6 @@ public class Song
         this.songName = songName;
     }
 
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-
     public String getArtist() {
         return artist;
     }
@@ -66,16 +65,40 @@ public class Song
         this.duration = duration;
     }
 
+    public String getAlbum() {
+        return album;
+    }
 
-    @Override
-    public String toString() {
-        return "Song{" +
-                "songId=" + songId +
-                ", songName='" + songName + '\'' +
-                ", genre='" + genre + '\'' +
-                ", album='" + album + '\'' +
-                ", artist='" + artist + '\'' +
-                ", duration='" + duration + '\'' +
-                '}';
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public String returnPath(int songId) throws SQLException, ClassNotFoundException {
+        String path = "";
+        Connection connection = DbConnection.getConnection();
+        String quer = "Select trackPath from songs where songId = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(quer);
+        preparedStatement.setInt(1,songId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            path = resultSet.getString(1);
+        }
+        return path;
     }
 }

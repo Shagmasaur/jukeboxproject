@@ -1,13 +1,10 @@
 package main.coding.Main;
 
-import main.coding.DAO.PlayListDao;
-import main.coding.DAO.PlaylistDetailsDao;
-import main.coding.DAO.SongDao;
+
+import main.coding.Data.MainOperations;
+import main.coding.Data.PlaySongs;
 import main.coding.Data.PlayList;
-import main.coding.Data.PlaylistDetails;
 import main.coding.Data.Song;
-import main.coding.Utility.DbConnection;
-import main.coding.Utility.PlayMusic;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -22,193 +19,211 @@ import java.util.Scanner;
 
 public class JukeBoxImpl
 {
-    static SongDao songDao = new SongDao();
-    static PlayListDao playlistDao = new PlayListDao();
-    static PlaylistDetailsDao playlistDetailsDao = new PlaylistDetailsDao();
-    static PlayMusic p = new PlayMusic();
-    static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws Exception {
+        Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException
-    {
-        System.out.println(" ");
-        System.out.println("------------WELCOME TO MUSIC WORLD-------------");
-        System.out.println(" ");
+        Song songsObj = new Song();
+        PlaySongs playSongObj = new PlaySongs();
+        PlayList playListObj = new PlayList();
+        MainOperations jukeBoxOperation = new MainOperations();
 
-        boolean y = true;
-        while (y) {
+        System.out.println("------------------------------Welcome to Jukebox-----------------------------------------");
+        System.out.println("                                      Songs Table");
+        System.out.println("--------------------------------------------------------------------------------------------------------");
+        System.out.format("%-10s %-18s %-15s %-18s %-18s %-15s  \n", "Song ID", "Song Name", "Duration", "Album", "Artist", "Genre");
+        System.out.println("======================================================================================================");
+        jukeBoxOperation.getAllsong();
 
-            System.out.println("Select the operation which you want to perform: ");
-            System.out.println(" ");
-            System.out.println("Press 1 to play the song ");
-            System.out.println("Press 2 to view the playlist ");
-            System.out.println("Press 3 to create a playlist ");
-            System.out.println("Press 4 to delete the playlist ");
-            System.out.println("Press 5 to see the all songs ");
-            System.out.println("press 6 to add the songs in the playlist ");
-            System.out.println("press 7 to play the song from playlist ");
-            System.out.println("Press 8 for exit ");
 
-            int choice =scanner.nextInt();
 
-            switch (choice) {
-                case 1: {
+        int opt = 0;
+        while (opt != 3) {
+            System.out.println("============================================================================================");
+            System.out.println(".....PLEASE SELECT THE OPTION .....");
+            System.out.println("Enter 1 : Want to Search A Song\nEnter 2 : For creating new playlist\nEnter 3 : Go back to your existing play list\nEnter 4 : Exit");
+            System.out.println("============================================================================================");
+            opt = scanner.nextInt();
+            try {
 
-                    System.out.println("---------------------------------------------Song List---------------------------------------------");
-                    System.out.println(" ");
-                    List<Song> songList = songDao.getAllSongs();
-                    songDao.printPlaylist(songList);
-                    System.out.println(" ");
-                    System.out.println("Please select the option on which basis you want to play the song");
-                    System.out.println(" ");
-                    System.out.println("Press 1 for play the song on the basis of artist ");
-                    System.out.println("Press 2 for play the song on the basis of genre ");
-                    System.out.println("Press 3 for play the song on the basis of album ");
-                    System.out.println("Press 4 for play the song on the basis of song name ");
 
-                    int userchoice = scanner.nextInt();
+                switch (opt) {
 
-                    switch (userchoice) {
+                    case (1):
+                        System.out.println("...............Search song based on following option.............");
+                        System.out.println("Enter 1 : Display all Songs\nEnter 2 :Display song by Artist Name\nEnter 3 :Display song by Genre Type\nEnter 4 :Display song by Song Name\nEnter 5 : Go back to previous menu");
+                        System.out.println("============================================================================================");
+                        int option = scanner.nextInt();
+                        switch (option) {
 
-                        case 1: {
-                            System.out.println("Enter the name of artist:");
-                            scanner.nextLine();
-                            String artist_name = scanner.nextLine();
-                            List<Song> sortedlist = songDao.songListOnTheBasisOfArtist(artist_name);
-                            songDao.printPlaylist(sortedlist);
+                            case (1):
 
-                            System.out.println("Enter the song name which you want to play");
-                            String songname = scanner.nextLine();
-                            try {
+                                System.out.format("%-10s %-18s %-15s %-18s %-18s %-15s \n", "SongID", "SongName", "Duration", "Album", "Artist", "GenreType");
+                                jukeBoxOperation.getAllsong();
+                                System.out.println("============================================================================================");
 
-                                p.PlaySong(songname);
-                            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                                System.out.println("PLEASE SELECT THE OPTION \n1:To  play a song \n2: Go to your playlistt\n3: Go back to the main menu");
+                                int choice = scanner.nextInt();
 
-                            break;
+                                switch (choice) {
+                                    case (1):
+                                        System.out.println("Enter song id which you want to play");
+                                        int songID = scanner.nextInt();
+                                        playSongObj.playSong(songsObj.returnPath(songID));
+                                        break;
+                                    case (2):
+                                        System.out.println("1.For Creating new playlist\n2.Go back to existing playlist");
+                                        int userChoice = scanner.nextInt();
+                                        switch (userChoice) {
+                                            case (1):
+                                                playListObj.createAPlayList();
+                                            case (2):
+                                                List<Song> playList = playListObj.existingPlaylist();
+                                                System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Album", "Artist", "GenreType");
+                                                System.out.println("============================================================================================");
+                                                for (Song songs : playList) {
+                                                    System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                                }
+                                                System.out.println("============================================================================================");
+                                                System.out.println("Enter 1: DO YOU WANT TO PLAY THE ENTIRE PLAYLIST\nEnter 2: DO YOU WANT TO PLAY A SONG FROM PLAYLIST\nEnter 3: GO BACK TO MAIN MENU");
+                                                int select = scanner.nextInt();
+                                                switch (select) {
+                                                    case (1):
+                                                        //want to listen entire play list
+                                                        playSongObj.playSong(playList);
+                                                        break;
+                                                    case (2):
+                                                        // want to listen a particular song
+                                                        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "GenreType");
+                                                        System.out.println("============================================================================================");
+                                                        for (Song songs : playList) {
+                                                            System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                                        }
+                                                        System.out.println("Please enter the song id you want to play....");
+                                                        int song_id = scanner.nextInt();
+                                                        playSongObj.playSong(songsObj.returnPath(song_id));
+
+                                                    case (3):
+                                                        // go back to main menu
+                                                        String[] arg = new String[0];
+                                                        JukeBoxImpl.main(arg);
+                                                        break;
+                                                    default:
+                                                        System.err.println("Not a valid option");
+                                                }
+
+                                        }
+                                        break;
+                                    case (3):
+                                        String[] arg = new String[0];
+                                        JukeBoxImpl.main(arg);
+                                        break;
+                                    default:
+                                        System.err.println("PLEASE SELECT THE RIGHT OPTION");
+
+
+                                }
+                                break;
+
+                            case (2):
+                                System.out.println("PLEASE ENTER THE ARTIST NAME YOU WANT TO SEARCH");
+                                scanner.nextLine();
+                                String artistName = scanner.nextLine();
+                                List<Song> songsListOfArtist = jukeBoxOperation.searchByArtist(artistName);
+                                System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "GenreType");
+                                System.out.println("-----------------------------------------------------------------------------------------");
+                                for (Song songs : songsListOfArtist) {
+                                    System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                }
+                                jukeBoxOperation.playSongs();
+                                break;
+                            case (3):
+                                System.out.println("PLEASE ENTER THE GENRE TYPE YOU WANT TO SEARCH");
+                                scanner.nextLine();
+                                String genreType = scanner.nextLine();
+                                List<Song> songsList1 = jukeBoxOperation.searchByGenre(genreType);
+                                System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "GenreType");
+                                System.out.println("-----------------------------------------------------------------------------------------");
+                                for (Song songs : songsList1) {
+                                    System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                }
+                                jukeBoxOperation.playSongs();
+                                break;
+                            case (4):
+                                System.out.println("PLEASE ENTER THE SONG NAME YOU WANT TO SEARCH");
+                                scanner.nextLine();
+                                String songName = scanner.nextLine();
+                                List<Song> songsListBasedOnName = jukeBoxOperation.searchBySongName(songName);
+                                System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "Genre");
+                                System.out.println("--------------------------------------------------------------------------------------------");
+                                for (Song songs : songsListBasedOnName) {
+                                    System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                }
+                                jukeBoxOperation.playSongs();
+                                break;
+                            case (5):
+                                String[] arg = new String[0];
+                                JukeBoxImpl.main(arg);
+                                break;
+
+                            default:
+                                System.err.println("PLEASE SELECT THE RIGHT OPTION");
+                                //option = scanner.nextInt();
                         }
-                        case 2: {
+                        break;
 
-                            System.out.println("Enter the song genre:");
-                            scanner.nextLine();
-                            String genre = scanner.nextLine();
-                            List<Song> sortedlist = songDao.songListOnTheBasisOfGenre(genre);
-                            songDao.printPlaylist(sortedlist);
-
-                            System.out.println("Enter the song name which you want to play");
-                            String songname = scanner.nextLine();
-
-                            try {
-
-                                p.PlaySong(songname);
-                            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
-                                throw new RuntimeException(e);
-                            }
-
-                            break;
+                    case (2):
+                        playListObj.createAPlayList();
+                        break;
+                    case (3):
+                        List<Song> playListEx = playListObj.existingPlaylist();
+                        System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "Genre");
+                        System.out.println("--------------------------------------------------------------------------------------------");
+                        for (Song songs : playListEx) {
+                            System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
                         }
-                        case 3: {
-                            System.out.println("Enter the album name:");
-                            scanner.nextLine();
-                            String album_name = scanner.nextLine();
-                            List<Song> sortedlist = songDao.songListOnTheBasisOfAlbum(album_name);
-                            songDao.printPlaylist(sortedlist);
-
-                            System.out.println("Enter the song name which you want to play");
-                            String songname = scanner.nextLine();
-                            try {
-
-                                p.PlaySong(songname);
-                            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                                throw new RuntimeException(e);
-                            }
-
-                            break;
+                        System.out.println("-----------------------------------------------------------------------------------------");
+                        System.out.println("1: DO YOU WANT TO PLAY THE ENTIRE PLAYLIST");
+                        System.out.println("2: DO YOU WANT TO PLAY A SONG FROM PLAYLIST\n3.DO YOU WANT TO ADD SONGS INTO THIS EXISTING PLAY LIST");
+                        System.out.println("4: GO BACK TO MAIN MENU");
+                        int select = scanner.nextInt();
+                        switch (select) {
+                            case (1):
+                                playSongObj.playSong(playListEx);
+                                JukeBoxImpl.main(args);
+                                break;
+                            case (2):
+                                System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", "SongID", "SongName", "Duration", "Rating", "Artist", "Genre");
+                                System.out.println("--------------------------------------------------------------------------------------------");
+                                for (Song songs : playListEx) {
+                                    System.out.format("%-10s %-30s %-30s %-30s %-30s %-30s \n", songs.getSongId(), songs.getSongName(), songs.getDuration(), songs.getAlbum(), songs.getArtist(), songs.getGenre());
+                                }
+                                System.out.println("Enter the song id you want to play");
+                                int song_id = scanner.nextInt();
+                                playSongObj.playSong(songsObj.returnPath(song_id));
+                                break;
+                            case 3:
+                                playListObj.addSongsIntoPlayList();
+                                break;
+                            case 4:
+                                JukeBoxImpl.main(args);
+                                break;
                         }
-                        case 4:{
-                            System.out.println("Enter the song name which you want to play");
-                            scanner.nextLine();
-                            String songname=scanner.nextLine();
+                        break;
 
-                            try {
-                                p.PlaySong(songname);
-                            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                                throw new RuntimeException(e);
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case 2 :{
+                    case (4):
+                        System.exit(0);
 
-                    playlistDao.getAllPlaylist();
-
-                    break;
                 }
-                case 3 : {
-                    System.out.println("enter playlistid ");
-                    int playlistId = scanner.nextInt();
-                    System.out.println("enter playlist name ");
-                    scanner.nextLine();
-                    String playlistName = scanner.nextLine();
-                    playlistDao.addPlaylist(new PlayList(playlistId,playlistName));
-                    break;
-                }
-                case 4 : {
-                    System.out.println("enter the name of the playlist which you want to delete ");
-                    scanner.nextLine();
-                    String playlistName = scanner.nextLine();
-                    playlistDao.deletePlaylistByName(playlistName);
-                    break;
-                }
-                case 5 : {
-                    System.out.println("-----------------------------------------Song List------------------------------------------------");
-                    List<Song> songList = new SongDao().getAllSongs();
-                    songDao.printPlaylist(songList);
-                    break;
-                }
-                case 6 : {
-                    System.out.println("enter the playlistId ");
-                    int playlist_id = scanner.nextInt();
-                    List<Song> songList = new SongDao().getAllSongs();
-                    songDao.printPlaylist(songList);
-                    System.out.println("enter the songName which you want to add in the playlist ");
-                    scanner.nextLine();
-                    String song_name = scanner.nextLine();
-                    playlistDetailsDao.addingSongsToPlayList(new PlaylistDetails(playlist_id,song_name));
-                    break;
-                }
-                case 7 : {
-                    List<PlaylistDetails>playlistDetailsList = new ArrayList<>();
-                    Connection connection = DbConnection.getConnection();
-                    System.out.println("enter the playlist id ");
-                    int playlistId = scanner.nextInt();
-                    PreparedStatement preparedStatement = connection.prepareStatement("select * from playlist_details where playlist_id = ?");
-                    preparedStatement.setInt(1,playlistId);
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()){
-                        playlistDetailsList.add(new PlaylistDetails(resultSet.getInt(1), resultSet.getString(2)));
-                    }
-                    System.out.format("%-10s %-20s\n", "PlayListId", "SongName");
-                    for (PlaylistDetails sortedlist : playlistDetailsList){
-                        System.out.format("%-10s %-20s\n", sortedlist.getPlaylist_Id(), sortedlist.getSong_name());
-                    }
-
-                    System.out.println("Enter the song name which you want to play");
-                    scanner.nextLine();
-                    String songname = scanner.nextLine();
-                    try {
-                        p.PlaySong(songname);
-                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    break;
-                }
-                case 8 : {
-                    y = false;
-                }
+            } catch (UnsupportedAudioFileException e) {
+                System.out.println("e = " + e);
+            } catch (SQLException e) {
+                System.out.println("e = " + e);
+            } catch (LineUnavailableException e) {
+                System.out.println("e = " + e);
+            } catch (IOException e) {
+                System.out.println("e = " + e);
+            } catch (ClassNotFoundException e) {
+                System.out.println("e = " + e);
             }
         }
     }

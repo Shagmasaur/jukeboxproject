@@ -8,7 +8,7 @@ public class DbConnection
 {
     public static Connection getConnection() throws ClassNotFoundException, SQLException
     {
-        Connection connection;
+        Connection connection=null;
         Class.forName("com.mysql.cj.jdbc.Driver");
         String url="jdbc:mysql://localhost:3306/jukeboxdb";
         String user="root";
