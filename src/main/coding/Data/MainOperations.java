@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class MainOperations
 {
     List<Song> songList = new ArrayList<>();
-    public List<Song> getAllsong() {
+    public List<Song> getAllSongs() {
         List<Song> list = new ArrayList<>();
         try {
             Connection connection = DbConnection.getConnection();
@@ -52,7 +52,7 @@ public class MainOperations
 
         List<Song> newLL = new ArrayList<>();
         Connection connection = DbConnection.getConnection();
-        String sql = "select * from songs where trackName like ?";
+        String sql = "select * from songs where song_Name like ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, songName + "%");
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -66,7 +66,7 @@ public class MainOperations
 
         List<Song> newLL = new ArrayList<>();
         Connection connection = DbConnection.getConnection();
-        String sql = "select * from songs where artist like ?";
+        String sql = "select * from songs where song_artist like ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, artistName + "%");
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,7 +80,7 @@ public class MainOperations
 
         List<Song> newLL = new ArrayList<>();
         Connection connection = DbConnection.getConnection();
-        String sql = "select * from songs where genre like ?";
+        String sql = "select * from songs where song_genre like ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, genre + "%");
         ResultSet resultSet = preparedStatement.executeQuery();

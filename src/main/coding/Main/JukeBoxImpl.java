@@ -9,11 +9,7 @@ import main.coding.Data.Song;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,12 +23,12 @@ public class JukeBoxImpl
         PlayList playListObj = new PlayList();
         MainOperations jukeBoxOperation = new MainOperations();
 
-        System.out.println("------------------------------Welcome to Jukebox-----------------------------------------");
+        System.out.println("------------------------------Welcome to MUSICWORLD-----------------------------------------");
         System.out.println("                                      Songs Table");
         System.out.println("--------------------------------------------------------------------------------------------------------");
         System.out.format("%-10s %-18s %-15s %-18s %-18s %-15s  \n", "Song ID", "Song Name", "Duration", "Album", "Artist", "Genre");
         System.out.println("======================================================================================================");
-        jukeBoxOperation.getAllsong();
+        jukeBoxOperation.getAllSongs();
 
 
 
@@ -58,7 +54,7 @@ public class JukeBoxImpl
                             case (1):
 
                                 System.out.format("%-10s %-18s %-15s %-18s %-18s %-15s \n", "SongID", "SongName", "Duration", "Album", "Artist", "GenreType");
-                                jukeBoxOperation.getAllsong();
+                                jukeBoxOperation.getAllSongs();
                                 System.out.println("============================================================================================");
 
                                 System.out.println("PLEASE SELECT THE OPTION \n1:To  play a song \n2: Go to your playlistt\n3: Go back to the main menu");

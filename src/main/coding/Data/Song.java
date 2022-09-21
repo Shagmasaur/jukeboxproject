@@ -18,14 +18,14 @@ public class Song
     private String filepath;
 
 
-    public Song(int songId, String songName, String artist, String duration, String album, String genre, String trackPath) {
+    public Song(int songId, String songName, String artist, String duration, String album, String genre, String filepath) {
         this.songId = songId;
         this.songName = songName;
         this.artist = artist;
         this.duration = duration;
         this.album = album;
         this.genre = genre;
-        this.filepath = trackPath;
+        this.filepath = filepath;
     }
 
     public Song()
@@ -92,8 +92,8 @@ public class Song
     public String returnPath(int songId) throws SQLException, ClassNotFoundException {
         String path = "";
         Connection connection = DbConnection.getConnection();
-        String quer = "Select trackPath from songs where songId = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(quer);
+        String queryyy = "Select filepath from songs where songId = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(queryyy);
         preparedStatement.setInt(1,songId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
